@@ -1,0 +1,10 @@
+CREATE TABLE log (
+    id UUID PRIMARY KEY,
+    sistema VARCHAR(255) NOT NULL,
+    tipo VARCHAR(255) NOT NULL,
+    traceback TEXT NOT NULL,
+    funcao VARCHAR(255) NULL,
+    linha INTEGER NULL,
+    arquivo VARCHAR(255) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
