@@ -1,9 +1,11 @@
-version: "3.8"
+version: '3.8'
+
+name: logger
 
 services:
   postgres:
-    image: postgres:latest
-    container_name: postgres_container
+    image: postgres:15
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -13,27 +15,20 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - my_network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_container
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
     restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
     ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-    networks:
-      - my_network
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
 volumes:
   postgres_data:
-
-networks:
-  my_network:
-    driver: bridge
+  rabbitmq_data:

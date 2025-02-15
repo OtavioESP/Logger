@@ -1,7 +1,7 @@
 package com.logger.api.controller;
 
+import com.logger.api.domain.logger.LoggerMessageDTO;
 import com.logger.api.domain.logger.LoggerRequestDTO;
-import com.logger.api.domain.logger.LoggerResponseDTO;
 import com.logger.api.service.logger.LoggerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +15,26 @@ public class LoggerController {
     private LoggerService loggerService;
 
     @PostMapping("/log")
-    public ResponseEntity<LoggerResponseDTO> createLog(
+    public ResponseEntity<Void> createLog(
             @RequestBody LoggerRequestDTO body,
             @RequestHeader(value = "X-Api-Key") String token
     ) {
-        System.out.println(token);
-        System.out.println(body.function());
-        System.out.println(body.args());
-        LoggerResponseDTO newLog = this.loggerService.createLogInstance(body, token);
-
-        return ResponseEntity.ok(newLog);
+        LoggerMessageDTO loggerMessageDTO = new LoggerMessageDTO(
+                body.errorType(),
+                body.traceback(),
+                body.function(),
+                body.args(),
+                body.line(),
+                body.filename(),
+                token
+        );
+        loggerService.createLogInstance(loggerMessageDTO);
+        return ResponseEntity.ok().build();
     }
+
+//    @PostMapping("/test/queue")
+//    public String sendLog(@RequestParam String message) {
+//        loggerProducer.sendLogMessage(message);
+//        return "Log sent!";
+//    }
 }
